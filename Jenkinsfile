@@ -1,62 +1,58 @@
-/**
- * Build and test the kubernetes plugin using the plugin itself in a Kubernetes cluster
- *
- * A `jenkins` service account needs to be created using src/main/kubernetes/service-account.yml
- *
- * A PersistentVolumeClaim needs to be created ahead of time with the definition in examples/maven-with-cache-pvc.yml
- *
- * NOTE that typically writable volumes can only be attached to one Pod at a time, so you can't execute
- * two concurrent jobs with this pipeline. Or change readOnly: true after the first run
- */
-
-podTemplate(yaml: """
-apiVersion: v1
-kind: Pod
-spec:
-  serviceAccountName: jenkins
-  containers:
-  - name: maven
-    command:
-    - cat
-    tty: true
-    env:
-    - name: BUILD_NUMBER
-      value: ${env.BUILD_NUMBER}
-    - name: BRANCH_NAME
-      value: ${env.BRANCH_NAME}
-    - name: _JAVA_OPTIONS
-      value: -Xmx300M
-    image: maven:3.6.1-jdk-8
-    resources:
-      limits:
-        memory: 1500Mi
-      requests:
-        cpu: 100m
-        memory: 1500Mi
-    """) {
-
-    node(POD_LABEL) {
-      stage('Checkout') {
-        checkout scm
-      }
-      stage('Package') {
-        try {
-          container('maven') {
-            sh 'mvn -B -ntp clean install -Dmaven.test.skip=true'
-          }
-        } finally {
-          archiveArtifacts allowEmptyArchive: true, artifacts: '**/target/*.hpi,**/target/*.jpi'
-          findbugs(includePattern:'**/target/findbugsXml.xml')
+podTemplate(
+    label: 'mypod',
+    inheritFrom: 'default',
+    containers: [
+        containerTemplate(
+            name: 'golang',
+            image: 'golang:1.10-alpine',
+            ttyEnabled: true,
+            command: 'cat'
+        ),
+        containerTemplate(
+            name: 'docker',
+            image: 'docker:18.02',
+            ttyEnabled: true,
+            command: 'cat'
+        ),
+        containerTemplate(
+            name: 'helm',
+            image: 'ibmcom/k8s-helm:v2.6.0',
+            ttyEnabled: true,
+            command: 'cat'
+        )
+    ],
+    volumes: [
+        hostPathVolume(
+            hostPath: '/var/run/docker.sock',
+            mountPath: '/var/run/docker.sock'
+        )
+    ]
+) {
+    node('mypod') {
+        def commitId
+        stage ('Extract') {
+            checkout scm
+            commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         }
-      }
-      stage('Test') {
-        try {
-          container('maven') {
-            sh 'mvn -B -ntp test -DconnectorHost=0.0.0.0'
-          }
-        } finally {
-          junit '**/target/surefire-reports/**/*.xml'
+        stage ('Build') {
+            container ('golang') {
+                sh 'CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .'
+            }
         }
-      }
+        def repository
+        stage ('Docker') {
+            container ('docker') {
+                def registryIp = sh(script: 'getent hosts registry.kube-system | awk \'{ print $1 ; exit }\'', returnStdout: true).trim()
+                repository = "${registryIp}:80/hello"
+                sh "docker build -t ${repository}:${commitId} ."
+                sh "docker push ${repository}:${commitId}"
+            }
+        }
+        stage ('Deploy') {
+            container ('helm') {
+                sh "/helm init --client-only --skip-refresh"
+                sh "/helm upgrade --install --wait --set image.repository=${repository},image.tag=${commitId} hello hello"
+            }
+        }
     }
-  }
+}
