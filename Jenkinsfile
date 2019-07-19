@@ -48,10 +48,10 @@ podTemplate(
                 sh 'ls -la'
                 withCredentials([file(credentialsId: 'istioplayfile', variable: 'GC_KEY')]) {
                     echo "${GC_KEY}"
-                    sh "docker login -u _json_key -p '${GC_KEY}' https://gcr.io"
-                    sh "docker build -t ${repository}:${commitId} ."
-                    sh "docker push ${repository}:${commitId}"
+                    sh "cat ${GC_KEY} | docker login -u _json_key --password-stdin https://gcr.io"
                 }
+                sh "docker build -t ${repository}:${commitId} ."
+                sh "docker push ${repository}:${commitId}"
             }
         }
         stage ('Deploy') {
