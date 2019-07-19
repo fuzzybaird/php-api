@@ -47,7 +47,7 @@ podTemplate(
                 repository = "gcr.io/istioplay/php-api"
                 withCredentials([file(credentialsId: 'istioplayfile', variable: 'GC_KEY')]) {
                     echo "${GC_KEY}"
-                    sh "docker login -u _json_key -p "$(cat ${GC_KEY})" https://gcr.io"
+                    sh "docker login -u _json_key -p '$(cat ${GC_KEY})' https://gcr.io"
                     sh "docker build -t ${repository}:${commitId} ."
                     sh "docker push ${repository}:${commitId}"
                 }
