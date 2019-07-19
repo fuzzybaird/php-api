@@ -37,14 +37,15 @@ podTemplate(
         }
         stage ('Install') {
             container ('composer') {
-                sh 'ls -la'
                 sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
+                sh 'ls -la'
             }
         }
         def repository
         stage ('Docker') {
             container ('docker') {
                 repository = "gcr.io/istioplay/php-api"
+                sh 'ls -la'
                 withCredentials([file(credentialsId: 'istioplayfile', variable: 'GC_KEY')]) {
                     echo "${GC_KEY}"
                     sh "docker login -u _json_key -p '${GC_KEY}' https://gcr.io"
@@ -56,7 +57,7 @@ podTemplate(
         stage ('Deploy') {
             container ('helm') {
                 sh "/helm init --client-only --skip-refresh"
-                sh "/helm upgrade --install --wait --set image.repository=${repository},image.tag=${commitId} hello hello"
+                sh "/helm upgrade --install --wait --set image.tag=${commitId} php-api mychart"
             }
         }
     }
