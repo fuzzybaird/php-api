@@ -3,10 +3,11 @@ podTemplate(
     inheritFrom: 'default',
     containers: [
         containerTemplate(
-            name: 'golang',
-            image: 'golang:1.10-alpine',
+            name: 'composer',
+            image: 'composer:1.8',
             ttyEnabled: true,
-            command: 'cat'
+            command: 'cat',
+            resourceRequestMemory: '300Mi'
         ),
         containerTemplate(
             name: 'docker',
@@ -34,18 +35,22 @@ podTemplate(
             checkout scm
             commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
         }
-        stage ('Build') {
-            container ('golang') {
-                sh 'CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -o main .'
+        stage ('Install') {
+            container ('composer') {
+                sh 'ls -la'
+                sh 'composer install --no-interaction --prefer-dist --optimize-autoloader'
             }
         }
         def repository
         stage ('Docker') {
             container ('docker') {
-                def registryIp = sh(script: 'getent hosts registry.kube-system | awk \'{ print $1 ; exit }\'', returnStdout: true).trim()
-                repository = "${registryIp}:80/hello"
-                sh "docker build -t ${repository}:${commitId} ."
-                sh "docker push ${repository}:${commitId}"
+                repository = "gcr.io/istioplay/php-api"
+                withCredentials([file(credentialsId: 'istioplayfile', variable: 'GC_KEY')]) {
+                    echo "${GC_KEY}"
+                    sh "docker login -u _json_key -p "$(cat ${GC_KEY})" https://gcr.io"
+                    sh "docker build -t ${repository}:${commitId} ."
+                    sh "docker push ${repository}:${commitId}"
+                }
             }
         }
         stage ('Deploy') {
