@@ -25,7 +25,7 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           envFrom:
             - configMapRef:
-              name: laravel-config
+                name: laravel-config
           ports:
             - name: http
               containerPort: 80
