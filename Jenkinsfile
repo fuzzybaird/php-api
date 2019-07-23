@@ -57,7 +57,7 @@ podTemplate(
         stage ('Deploy') {
             container ('helm') {
                 sh "/helm init --client-only --skip-refresh"
-                sh "/helm upgrade --install --wait --set image.tag=${commitId} php-api mychart --namespace=test"
+                sh "/helm upgrade --install --wait --set image.tag=${commitId} php-api mychart"
             }
         }
     }

@@ -4,7 +4,7 @@ metadata:
   name: laravel-config
   labels:
     name: laravel-config
-  namespace: test
+  namespace: default
 data:
   APP_ENV: "prod"
   APP_KEY: "base64:vw6G2uP8LV22haEERtzr5yDCBraLrMwbxlbSJDA97uk="
