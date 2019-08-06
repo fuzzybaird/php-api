@@ -8,11 +8,8 @@ spec:
   gateways:
   - php-api
   http:
-  - match:
-    - uri:
-        prefix: /api
-    route:
+  - route:
     - destination:
         host: {{ (index .Values.ingress.hosts 0).host | quote }}
         port:
-        number: {{ .Values.service.port }}
+          number: {{ .Values.service.port }}
