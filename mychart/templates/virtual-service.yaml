@@ -4,12 +4,15 @@ metadata:
   name: virtualservice-php-api
 spec:
   hosts:
-  - "*"
+  - "php-api.wesaynow.com"
   gateways:
   - php-api
   http:
-  - route:
+  - match:
+    - uri:
+        prefix: /api
+    route:
     - destination:
         host: {{ (index .Values.ingress.hosts 0).host | quote }}
         port:
-          number: {{ .Values.service.port }}
+        number: {{ .Values.service.port }}
