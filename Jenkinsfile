@@ -7,13 +7,14 @@ podTemplate(
             image: 'composer:1.8',
             ttyEnabled: true,
             command: 'cat',
-            resourceRequestMemory: '300Mi'
+            resourceRequestMemory: '500Mi'
         ),
         containerTemplate(
             name: 'docker',
             image: 'docker:18.02',
             ttyEnabled: true,
             command: 'cat'
+            resourceRequestMemory: '500Mi'
         ),
         containerTemplate(
             name: 'helm',
