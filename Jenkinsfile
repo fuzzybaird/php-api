@@ -13,7 +13,7 @@ podTemplate(
             name: 'docker',
             image: 'docker:18.02',
             ttyEnabled: true,
-            command: 'cat'
+            command: 'cat',
             resourceRequestMemory: '500Mi'
         ),
         containerTemplate(
