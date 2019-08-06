@@ -1,0 +1,15 @@
+apiVersion: networking.istio.io/v1alpha3
+kind: VirtualService
+metadata:
+  name: virtualservice-php-api
+spec:
+  hosts:
+  - "*"
+  gateways:
+  - php-api
+  http:
+  - route:
+    - destination:
+        host: {{ (index .Values.ingress.hosts 0).host | quote }}
+        port:
+          number: {{ .Values.service.port }}

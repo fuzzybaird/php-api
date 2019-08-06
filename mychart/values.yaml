@@ -13,9 +13,9 @@ nameOverride: ""
 fullnameOverride: ""
 
 service:
-  type: ClusterIP
-  port: 8433
-  target: 8433
+  type: IPCluster
+  port: 8423
+  target: 80
 
 ingress:
   enabled: false
@@ -23,7 +23,7 @@ ingress:
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"
   hosts:
-    - host: php-api.local
+    - host: php-api-mychart
       paths: []
 
   tls: []
