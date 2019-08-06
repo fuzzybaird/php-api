@@ -1,9 +1,15 @@
 podTemplate(
     label: 'mypod',
-    inheritFrom: 'default',
-    resourceRequestMemory: '1024Mi',
-    resourceRequestCpu: '500m',
     containers: [
+        containerTemplate(
+            name: 'jnlp',
+            image: 'jenkins/jnlp-slave:3.27-1-alpine',
+            args: '${computer.jnlpmac} ${computer.name}',
+            resourceRequestCpu: '500m',
+            resourceRequestMemory: '1024Mi',
+            resourceLimitCpu: '1000m',
+            resourceLimitMemory: '2048Mi'
+        ),
         containerTemplate(
             name: 'composer',
             image: 'composer:1.8',
