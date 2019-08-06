@@ -12,7 +12,7 @@
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return ["php-api" => "this service is deployed and dockerised with in PHP"];
 });
 
 Route::get('/health', function () {

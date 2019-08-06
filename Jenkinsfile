@@ -14,7 +14,7 @@ podTemplate(
             image: 'docker:18.02',
             ttyEnabled: true,
             command: 'cat',
-            resourceRequestMemory: '500Mi'
+            resourceRequestMemory: '1500Mi'
         ),
         containerTemplate(
             name: 'helm',
