@@ -1,20 +1,22 @@
 podTemplate(
     label: 'mypod',
     inheritFrom: 'default',
+    resourceRequestMemory: '1024Mi',
+    resourceRequestCpu: '500m',
     containers: [
         containerTemplate(
             name: 'composer',
             image: 'composer:1.8',
             ttyEnabled: true,
             command: 'cat',
-            resourceRequestMemory: '500Mi'
+            resourceRequestMemory: '1024Mi'
         ),
         containerTemplate(
             name: 'docker',
             image: 'docker:18.02',
             ttyEnabled: true,
             command: 'cat',
-            resourceRequestMemory: '1500Mi'
+            resourceRequestMemory: '1024Mi'
         ),
         containerTemplate(
             name: 'helm',
