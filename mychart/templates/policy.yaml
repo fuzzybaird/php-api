@@ -1,10 +1,10 @@
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "Policy"
 metadata:
-  name: "jwt-example"
+  name: {{ include "mychart.fullname" . }}
 spec:
   targets:
-  - name: php-api-mychart
+  - name: {{ include "mychart.fullname" . }}
   origins:
   - jwt:
       issuer: "https://chghealthcare.oktapreview.com"
