@@ -1,0 +1,15 @@
+apiVersion: "authentication.istio.io/v1alpha1"
+kind: "Policy"
+metadata:
+  name: "jwt-example"
+spec:
+  targets:
+  - name: httpbin
+  origins:
+  - jwt:
+      issuer: "https://chghealthcare.oktapreview.com"
+      jwksUri: "https://chghealthcare.oktapreview.com/oauth2/v1/keys"
+      trigger_rules:
+      - excluded_paths:
+        - exact: /html
+  principalBinding: USE_ORIGIN
