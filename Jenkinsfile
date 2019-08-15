@@ -42,7 +42,7 @@ podTemplate(
         def commitId
         stage ('Extract') {
             checkout scm
-            commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim()
+            commitId = sh(script: 'git rev-parse --short HEAD', returnStdout: true).trim() + "SHA"
         }
         stage ('Install') {
             container ('composer') {
