@@ -1,14 +1,27 @@
+# apiVersion: "authentication.istio.io/v1alpha1"
+# kind: "Policy"
+# metadata:
+#   name: "httpbin"
+# spec:
+#   targets:
+#   - name: "httpbin"
+#   origins:
+#   - jwt:
+#       issuer: "https://chghealthcare.oktapreview.com"
+#       jwksUri: "https://chghealthcare.oktapreview.com/oauth2/v1/keys"
+#   principalBinding: USE_ORIGIN
+
 apiVersion: "authentication.istio.io/v1alpha1"
 kind: "Policy"
 metadata:
-  name: {{ include "mychart.fullname" . }}
+  name: "php-api"
 spec:
   targets:
-  - name: {{ include "mychart.fullname" . }}
+  - name: php-api-mychart
   origins:
   - jwt:
-      issuer: "https://chghealthcare.oktapreview.com"
-      jwksUri: "https://chghealthcare.oktapreview.com/oauth2/v1/keys"
+      issuer: "https://chghealthcare.oktapreview.com/oauth2/auskmtjacfEi8ffM60h7"
+      jwksUri: "https://chghealthcare.oktapreview.com/oauth2/auskmtjacfEi8ffM60h7/v1/keys"
       trigger_rules:
       - excluded_paths:
         - exact: /health

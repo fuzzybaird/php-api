@@ -11,7 +11,7 @@ data:
   APP_LOG: "errorlog"
   APP_LOG_LEVEL: "debug"
   APP_URL: "http://localhost"
-
+  DB_PASSWORD: "POOPHEADCLOUD"
   BROADCAST_DRIVER: "log"
   CACHE_DRIVER: "file"
   SESSION_DRIVER: "file"
