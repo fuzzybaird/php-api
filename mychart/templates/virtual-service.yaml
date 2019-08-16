@@ -13,3 +13,16 @@ spec:
         host: {{ (index .Values.ingress.hosts 0).host | quote }}
         port:
           number: {{ .Values.service.port }}
+    corsPolicy:
+      allowOrigin:
+      - "*"
+      allowMethods:
+      - POST
+      - GET
+      - PATCH
+      - DELETE
+      - PUT
+      allowCredentials: false
+      allowHeaders:
+      - "*"
+      maxAge: "24h"

@@ -22,6 +22,10 @@ Route::get('/health', function () {
     return ["status" => "healthy"];
 });
 
+Route::get('/kevin', function () {
+    return ["status" => "bad-ass"];
+});
+
 Route::get('/providers', function () {
     return ["providers" => [
             [
