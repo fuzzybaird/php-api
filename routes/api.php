@@ -14,7 +14,7 @@ use Illuminate\Http\Request;
 */
 
 Route::middleware('auth:api')->get('/health', function (Request $request) {
-    return ["status" => "healthy"];
+    return ["status" => "healthy-and-happy"];
 });
 
 Route::middleware('auth:api')->get('/providers', function (Request $request) {
