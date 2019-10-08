@@ -19,7 +19,7 @@ Route::get('/', function () {
 });
 
 Route::get('/health', function () {
-    return ["status" => "happy-and-healthy"];
+    return ["status" => "happy-and-cool"];
 });
 
 Route::get('/kevin', function () {
